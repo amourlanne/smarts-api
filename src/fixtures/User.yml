@@ -1,0 +1,11 @@
+entity: User
+parameters: {}
+items:
+  user1:
+    firstName: '{{name.firstName}}'
+    lastName: '{{name.lastName}}'
+    role: '{{internet.email}}'
+  user2:
+    firstName: '{{name.firstName}}'
+    lastName: '{{name.lastName}}'
+    role: '{{internet.email}}'

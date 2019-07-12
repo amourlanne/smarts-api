@@ -1,0 +1,11 @@
+# Dependency directories
+node_modules/
+
+# Environment variable file
+.env
+
+# Build folder
+build/
+
+# Jetbrains folder
+.idea
