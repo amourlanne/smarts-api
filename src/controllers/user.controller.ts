@@ -23,15 +23,6 @@ class UserController {
 
     const userRepository = getRepository(User);
 
-    const user = new User();
-    user.firstName = "test";
-    user.username = "test";
-    user.lastName = "test";
-    user.password = "test";
-    user.role = "role";
-
-    const result = userRepository.save(user);
-
     let users: User[];
 
     try {

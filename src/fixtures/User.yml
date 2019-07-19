@@ -1,11 +1,17 @@
 entity: User
 parameters: {}
 items:
-  user1:
+  admin:
+    username: 'admin'
     firstName: '{{name.firstName}}'
     lastName: '{{name.lastName}}'
-    role: '{{internet.email}}'
-  user2:
+    role: 'ROLE_ADMIN'
+    email: 'admin@typeorm-api.com'
+    password: 'admin'
+  user{1..10}:
+    username: 'user($current)'
     firstName: '{{name.firstName}}'
     lastName: '{{name.lastName}}'
-    role: '{{internet.email}}'
+    role: 'ROLE_USER'
+    email: 'user($current)@typeorm-api.com'
+    password: 'user($current)'

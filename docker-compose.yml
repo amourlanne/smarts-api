@@ -8,7 +8,7 @@ services:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: database
+      MYSQL_DATABASE: typeorm-api
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     ports:
