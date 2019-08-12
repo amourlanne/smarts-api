@@ -23,5 +23,11 @@ services:
       - '8080:80'
     volumes:
       - /sessions
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - '1080:80'
+      - '1025:25'
 volumes:
   mysql_data:

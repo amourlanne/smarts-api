@@ -1,10 +1,8 @@
 import {Middleware, ExpressMiddlewareInterface} from "routing-controllers";
-import {NextFunction, Request, Response, Send} from 'express';
+import {NextFunction, Request, Response} from 'express';
 
 const wrapperResult = (data?: any) => {
-  return {
-   result : data
-  };
+  return data;
 };
 
 @Middleware({ type: "before" })

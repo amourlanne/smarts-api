@@ -1,17 +1,19 @@
-import express, { Request, Response } from 'express';
-import router from './routes';
+import express from 'express';
 import logger from 'morgan';
 import helmet from 'helmet';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import 'dotenv/config';
-import {createConnection, getRepository} from "typeorm";
-import {Action, useExpressServer} from "routing-controllers";
-import {UserController} from "./controllers/UserController";
+import { createConnection, getCustomRepository, getRepository, useContainer as useTypeormContainer } from 'typeorm';
+import { Action, useContainer as useRoutingControllersContainer, useExpressServer } from 'routing-controllers';
 import {User} from "./entity/User";
+import {Container} from "typedi";
+import { UserRepository } from './repository/UserRepository';
 
 const server = express();
+
+useTypeormContainer(Container);
 
 createConnection().then(async connection => {
 
@@ -21,11 +23,9 @@ createConnection().then(async connection => {
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(cookieParser());
 
-  // server.get('/', (req: Request, res: Response) => {
-  //   res.redirect(g'/api');
-  // });
-  //
-  // server.use('/api', router);
+  // its important to set container before any operation you do with routing-controllers,
+  // including importing controllers
+  useRoutingControllersContainer(Container);
 
   useExpressServer(server, {
     // register created express server in routing-controllers
@@ -33,24 +33,28 @@ createConnection().then(async connection => {
     controllers: [__dirname + "/controllers/**/*.ts"], // and configure it the way you need (controllers, validation, etc.)
     middlewares: [__dirname + "/middlewares/**/*.ts"],
     interceptors: [__dirname + "/interceptors/**/*.ts"],
-    authorizationChecker: async ({request, response}: Action, roles: string[]) => {
+    authorizationChecker: async ({request}: Action, roles: string[]) => {
 
       const token = request.cookies["access_token"];
 
-      console.log(token);
-      response.cookies('access_token',"caca");
+      const userRepository = getCustomRepository(UserRepository);
 
-      return true;
+      let user: User|undefined = await userRepository.findByToken(token, {activated: true});
 
-      const userRepository = getRepository(User);
+      if (user && !roles.length)
+        return true;
 
-      // if (user && !roles.length)
-      //   return true;
-      //
-      // if (user && roles.find(role => user.roles.indexOf(role) !== -1))
-      //   return true;
+      if (user && roles.includes(user.role))
+        return true;
 
       return false;
+    },
+    currentUserChecker: async ({request}: Action) => {
+      const token = request.cookies["access_token"];
+
+      const userRepository = getCustomRepository(UserRepository);
+
+      return await userRepository.findByToken(token, {activated: true});
     }
   });
 

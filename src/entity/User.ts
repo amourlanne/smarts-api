@@ -21,7 +21,7 @@ export enum UserRole {
 export class User {
 
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column()
   @Length(4, 20)
@@ -47,6 +47,9 @@ export class User {
   @IsNotEmpty()
   lastName: string;
 
+  @Column({default: false})
+  activated: boolean;
+
   @Column()
   @CreateDateColumn()
   createdAt: Date;
@@ -59,12 +62,4 @@ export class User {
   hashPassword() {
     this.password = bcrypt.hashSync(this.password, 8);
   }
-
-  validateUnencryptedPasswordOfFail(unencryptedPassword: string) {
-    if(!bcrypt.compareSync(unencryptedPassword, this.password)) {
-      throw new Error();
-    }
-  }
-
-
 }

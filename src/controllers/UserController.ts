@@ -1,19 +1,61 @@
-import {getRepository} from "typeorm";
-import {User} from "../entity/User";
+import { getCustomRepository, getRepository } from 'typeorm';
+import { User, UserRole } from '../entity/User';
 import { Request, Response } from 'express';
-import {Get, JsonController, Req, Res} from "routing-controllers";
+import {
+  Authorized,
+  CurrentUser,
+  Get,
+  JsonController,
+  Post,
+  Put,
+  Req,
+  Res,
+  Body,
+  Param,
+  NotFoundError, Delete, OnUndefined,
+} from 'routing-controllers';
+import { UserRepository } from '../repository/UserRepository';
+import { Inject } from 'typedi';
+import { UserService } from '../service/UserService';
+import { UserNotFoundError } from '../error/UserNotFoundError';
 
 @JsonController("/users")
+@Authorized()
 export class UserController {
 
-  @Get()
-  async getAll(@Req() request: Request, @Res() response: Response)  {
-    const userRepository = getRepository(User);
+  @Inject()
+  private userService: UserService;
 
-    let users: User[];
+  @Post()
+  @Authorized(UserRole.Admin)
+  public async httpPost(@Req() request: Request, @Res() response: Response, @Body({ validate: true }) user: User)  {
 
-    users = await userRepository.find();
-
-    return users;
+    const userRepository = getCustomRepository(UserRepository);
+    return await userRepository.save(user);
   }
+
+  @Put()
+  public async httpPut(@Req() request: Request, @Res() response: Response, @Body({ validate: true }) user: User)  {
+
+    const userRepository = getCustomRepository(UserRepository);
+    return await userRepository.save(user);
+  }
+
+  @Get()
+  public async httpGetAll(@Req() request: Request, @Res() response: Response)  {
+    return this.userService.getAll()
+  }
+
+  @Get("/:id")
+  @OnUndefined(UserNotFoundError)
+  public httpGetOne(@Param("id") id: string) {
+    return this.userService.getById(id);
+  }
+
+  // @Delete('/:id')
+  // public httpDelete(
+  //   @Param('id') id: string,
+  // ): Promise<void> {
+  //   return this.userService.delete(id);
+  // }
 }

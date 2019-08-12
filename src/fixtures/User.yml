@@ -8,6 +8,7 @@ items:
     role: 'ROLE_ADMIN'
     email: 'admin@typeorm-api.com'
     password: 'admin'
+    activated: true
   user{1..10}:
     username: 'user($current)'
     firstName: '{{name.firstName}}'
@@ -15,3 +16,4 @@ items:
     role: 'ROLE_USER'
     email: 'user($current)@typeorm-api.com'
     password: 'user($current)'
+    activated: true
