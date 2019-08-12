@@ -2,7 +2,7 @@ import { Inject, Service } from 'typedi';
 import { User } from '../entity/User';
 import { UserRepository } from '../repository/UserRepository';
 import { InjectRepository } from 'typeorm-typedi-extensions';
-import { FindConditions } from 'typeorm';
+import { FindConditions, ObjectLiteral } from 'typeorm';
 
 @Service()
 export class UserService {
@@ -37,14 +37,14 @@ export class UserService {
       return this.userRepository.findByLogs(username, password);
   }
 
-  public getByToken(token: string): Promise<User|undefined> {
-    return this.userRepository.findByToken(token, {activated: true});
+  public getByToken(token: string, jwtSecret: string, onlyActivated: boolean = true): Promise<User|undefined> {
+    return this.userRepository.findByToken(token, jwtSecret, onlyActivated ? {activated: true} : {});
   }
 
-  // public update(id: string, props: User): Promise<void> {
-  //   return this.userRepository.updateById(id, props);
-  // }
-  //
+  public save(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
+
   // public delete(id: string): Promise<void> {
   //   return this.userRepository.removeById(id);
   // }

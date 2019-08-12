@@ -16,7 +16,7 @@ export class RefreshTokenMiddleware implements ExpressMiddlewareInterface {
     const token = request.cookies['access_token'];
 
     if(token) {
-      const user = await this.userService.getByToken(token);
+      const user = await this.userService.getByToken(token, config.jwtAuthSecret);
 
       if(user) {
         //Sing JWT, valid for 1 hour

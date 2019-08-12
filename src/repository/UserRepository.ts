@@ -9,8 +9,8 @@ import * as bcrypt from 'bcryptjs';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
 
-  public findByToken(token: string, conditions: ObjectLiteral | undefined = undefined): Promise<User|undefined> {
-    const { userId } = <any>jwt.verify(token, config.jwtAuthSecret);
+  public findByToken(token: string, jwtSecret: string, conditions: ObjectLiteral | undefined = undefined): Promise<User|undefined> {
+    const { userId } = <any>jwt.verify(token, jwtSecret);
     return this.findOne({id: userId, ...conditions});
   }
 

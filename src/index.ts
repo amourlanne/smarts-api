@@ -10,6 +10,7 @@ import { Action, useContainer as useRoutingControllersContainer, useExpressServe
 import {User} from "./entity/User";
 import {Container} from "typedi";
 import { UserRepository } from './repository/UserRepository';
+import config from './config/config';
 
 const server = express();
 
@@ -39,7 +40,7 @@ createConnection().then(async connection => {
 
       const userRepository = getCustomRepository(UserRepository);
 
-      let user: User|undefined = await userRepository.findByToken(token, {activated: true});
+      let user: User|undefined = await userRepository.findByToken(token, config.jwtAuthSecret, {activated: true});
 
       if (user && !roles.length)
         return true;
@@ -54,7 +55,7 @@ createConnection().then(async connection => {
 
       const userRepository = getCustomRepository(UserRepository);
 
-      return await userRepository.findByToken(token, {activated: true});
+      return await userRepository.findByToken(token, config.jwtAuthSecret, {activated: true});
     }
   });
 

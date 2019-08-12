@@ -7,7 +7,7 @@ import {
   Res,
   BodyParam,
   Post,
-  NotFoundError, Authorized,
+  NotFoundError, Authorized, Param, Body, QueryParam,
 } from 'routing-controllers';
 import config from "../config/config";
 import { Inject } from 'typedi';
@@ -45,40 +45,70 @@ export class AuthController {
     return user;
   }
 
-  // @Post("/register")
-  // @Authorized(UserRole.Admin)
-  // async register(@Res() response: Response,
-  //             @BodyParam("username", { required: true }) username: string,
-  //             @BodyParam("password", { required: true }) password: string ) {
-  //
-  //   const user: User|undefined = await this.userService.getByLogs(username, password);
-  //
-  //   if(!user)
-  //     throw new NotFoundError('Bad credentials');
-  //
-  //   //Sing JWT, valid for 1 hour
-  //   const token = jwt.sign(
-  //     { userId: user.id, username: user.username },
-  //     config.jwtAuthSecret,
-  //     { expiresIn: "1h" }
-  //   );
-  //
-  //   response.cookie('access_token', token, { expires: new Date(Date.now() + 3600000)});
-  //
-  //   return user;
-  // }
+  @Post("/register")
+  @Authorized(UserRole.Admin)
+  async register(@Body() user: User,
+                 @QueryParam('sendPassword', { required: true }) sendPassword: boolean) {
 
-  @Post("/reset-password")
-  async resetPassword(@BodyParam("email", { required: true }) email: string) {
+
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      config.jwtAccountConfirmationSecret,
+      { expiresIn: "1y" }
+    );
+
+    const password = user.password;
+
+    this.userService.save(user);
+
+    let mailOptions = {
+      template: 'welcome-onboard',
+      message: {
+        from: 'Alexis Mourlanne <alexis.mourlanne@gmail.com>',
+        to: user.email,
+      },
+      locals: {
+        userName: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        token: token,
+        password: sendPassword ? password : '*'.repeat(password.length)
+      }
+    };
+
+    const {response} = await this.mailerService.sendMail(mailOptions);
+    return response;
+  }
+
+  @Post("/verify-account")
+  async verifyAccount(@QueryParam('token', { required: true }) token: string) {
+
+    const user: User|undefined = await this.userService.getByToken(token, config.jwtAccountConfirmationSecret, false);
+
+    if(!user)
+      throw new Error('Not have account associate to this token.');
+
+    if(user.activated)
+      throw new Error('User already activated.');
+
+    user.activated = true;
+    this.userService.save(user);
+
+    return "Account activated."
+  }
+
+  @Post("/request-password")
+  async requestPassword(@QueryParam("email", { required: true }) email: string) {
 
     const user: User|undefined = await this.userService.getOne({email});
 
     if(!user)
       return;
 
-    const hash = jwt.sign(
+    const token = jwt.sign(
       { userId: user.id, username: user.username },
-      config.jwtAccountResetPasswordSecret,
+      config.jwtResetPasswordSecret,
+      { expiresIn: "1h" }
     );
 
     let mailOptions = {
@@ -89,10 +119,32 @@ export class AuthController {
       },
       locals: {
         userName: user.username,
-        hash: hash
+        token: token
       }
     };
+    const {response} = await this.mailerService.sendMail(mailOptions);
+    return response;
+  }
 
-    return this.mailerService.sendMail(mailOptions);
+  @Post("/reset-password")
+  async resetPassword(@QueryParam('token', { required: true }) token: string,
+                      @BodyParam('password', { required: true }) password: string,
+                      @BodyParam('confirmPassword', { required: true }) confirmPassword : string) {
+
+    if (password !== confirmPassword)
+      throw new Error('Password are not the same.');
+
+    const user: User|undefined = await this.userService.getByToken(token, config.jwtResetPasswordSecret);
+
+    if(!user)
+      throw new Error('Not have account associate to this token.');
+
+    // password !== confirmPassword
+    user.password = password;
+    user.hashPassword();
+
+    await this.userService.save(user);
+
+    return "Password succefully changed."
   }
 }
