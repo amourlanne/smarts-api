@@ -42,6 +42,7 @@ export class UserController {
   }
 
   @Get()
+  @Authorized(UserRole.Admin)
   public async httpGetAll(@Req() request: Request, @Res() response: Response)  {
     return this.userService.getAll()
   }

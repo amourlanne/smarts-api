@@ -45,10 +45,10 @@ export class AuthController {
     return user;
   }
 
-  @Post("/register")
+  @Post("/signup")
   @Authorized(UserRole.Admin)
-  async register(@Body() user: User,
-                 @QueryParam('sendPassword') sendPassword: boolean) {
+  async signUp(@Body() user: User,
+               @QueryParam('sendPassword') sendPassword: boolean) {
 
     const password = user.password;
 
@@ -82,8 +82,8 @@ export class AuthController {
     return user;
   }
 
-  @Post("/verify-account")
-  async verifyAccount(@QueryParam('token', { required: true }) token: string) {
+  @Post("/verification")
+  async verification(@QueryParam('token', { required: true }) token: string) {
 
     const user: User|undefined = await this.userService.getByToken(token, config.jwtAccountConfirmationSecret, false);
 

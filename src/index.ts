@@ -11,6 +11,9 @@ import {User} from "./entity/User";
 import {Container} from "typedi";
 import { UserRepository } from './repository/UserRepository';
 import config from './config/config';
+import { AuthenticationRequiredError } from './error/AuthenticationRequiredError';
+import { InvalidAuthenticationTokenError } from './error/InvalidAuthenticationTokenError';
+import { AccessDeniedError } from './error/AccessDeniedError';
 
 const server = express();
 
@@ -30,6 +33,7 @@ createConnection().then(async connection => {
 
   useExpressServer(server, {
     // register created express server in routing-controllers
+    development: false,
     routePrefix: "/api",
     controllers: [__dirname + "/controllers/**/*.ts"], // and configure it the way you need (controllers, validation, etc.)
     middlewares: [__dirname + "/middlewares/**/*.ts"],
@@ -37,16 +41,24 @@ createConnection().then(async connection => {
     authorizationChecker: async ({request}: Action, roles: string[]) => {
 
       const token = request.cookies["access_token"];
+      if(!token) throw new AuthenticationRequiredError();
 
       const userRepository = getCustomRepository(UserRepository);
 
-      let user: User|undefined = await userRepository.findByToken(token, config.jwtAuthSecret, {activated: true});
+      let user: User|undefined;
+
+      try {
+         user = await userRepository.findByToken(token, config.jwtAuthSecret, {activated: true});
+      } catch (e) {
+        throw new InvalidAuthenticationTokenError();
+      }
 
       if (user && !roles.length)
         return true;
 
       if (user && roles.includes(user.role))
         return true;
+      else throw new AccessDeniedError();
 
       return false;
     },

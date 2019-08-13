@@ -5,7 +5,7 @@ import config from '../config/config';
 import { Inject } from 'typedi';
 import { UserService } from '../service/UserService';
 
-@Middleware({ type: "before" })
+// @Middleware({ type: "before" })
 export class RefreshTokenMiddleware implements ExpressMiddlewareInterface {
 
   @Inject()
