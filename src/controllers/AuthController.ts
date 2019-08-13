@@ -48,18 +48,17 @@ export class AuthController {
   @Post("/register")
   @Authorized(UserRole.Admin)
   async register(@Body() user: User,
-                 @QueryParam('sendPassword', { required: true }) sendPassword: boolean) {
-
-
-    const token = jwt.sign(
-      { userId: user.id, username: user.username },
-      config.jwtAccountConfirmationSecret,
-      { expiresIn: "1y" }
-    );
+                 @QueryParam('sendPassword') sendPassword: boolean) {
 
     const password = user.password;
 
-    this.userService.save(user);
+    await this.userService.save(user);
+
+    const token = jwt.sign(
+        { userId: user.id, username: user.username },
+        config.jwtAccountConfirmationSecret,
+        { expiresIn: "30d" }
+    );
 
     let mailOptions = {
       template: 'welcome-onboard',
@@ -76,8 +75,11 @@ export class AuthController {
       }
     };
 
-    const {response} = await this.mailerService.sendMail(mailOptions);
-    return response;
+    await this.mailerService.sendMail(mailOptions);
+
+    delete user.password;
+
+    return user;
   }
 
   @Post("/verify-account")
@@ -88,13 +90,12 @@ export class AuthController {
     if(!user)
       throw new Error('Not have account associate to this token.');
 
-    if(user.activated)
-      throw new Error('User already activated.');
+    if(!user.activated) {
+      user.activated = true;
+      await this.userService.save(user);
+    }
 
-    user.activated = true;
-    this.userService.save(user);
-
-    return "Account activated."
+    return user;
   }
 
   @Post("/request-password")
@@ -139,7 +140,6 @@ export class AuthController {
     if(!user)
       throw new Error('Not have account associate to this token.');
 
-    // password !== confirmPassword
     user.password = password;
     user.hashPassword();
 
