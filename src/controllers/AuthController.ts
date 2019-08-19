@@ -47,7 +47,7 @@ export class AuthController {
 
   @Post("/signup")
   @Authorized(UserRole.Admin)
-  async signUp(@Body() user: User,
+  async signUp(@Body({ validate: true }) user: User,
                @QueryParam('sendPassword') sendPassword: boolean) {
 
     const password = user.password;

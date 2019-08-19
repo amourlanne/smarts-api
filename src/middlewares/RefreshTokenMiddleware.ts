@@ -5,7 +5,7 @@ import config from '../config/config';
 import { Inject } from 'typedi';
 import { UserService } from '../service/UserService';
 
-// @Middleware({ type: "before" })
+// @Middleware({ type: "after" }) // Can't set headers after they are sent.
 export class RefreshTokenMiddleware implements ExpressMiddlewareInterface {
 
   @Inject()
@@ -19,7 +19,7 @@ export class RefreshTokenMiddleware implements ExpressMiddlewareInterface {
       const user = await this.userService.getByToken(token, config.jwtAuthSecret);
 
       if(user) {
-        //Sing JWT, valid for 1 hour
+        // Sing JWT, valid for 1 hour
         const token = jwt.sign(
           { userId: user.id, username: user.username },
           config.jwtAuthSecret,

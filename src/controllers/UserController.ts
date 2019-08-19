@@ -18,6 +18,7 @@ import { UserRepository } from '../repository/UserRepository';
 import { Inject } from 'typedi';
 import { UserService } from '../service/UserService';
 import { UserNotFoundError } from '../error/UserNotFoundError';
+import {FormatResponse} from "../helpers/FormatResponse";
 
 @JsonController("/users")
 @Authorized()
@@ -28,23 +29,22 @@ export class UserController {
 
   @Post()
   @Authorized(UserRole.Admin)
-  public async httpPost(@Req() request: Request, @Res() response: Response, @Body({ validate: true }) user: User)  {
+  public async httpPost(@Req() request: Request, @Res() response: FormatResponse, @Body({ validate: true }) user: User)  {
 
     const userRepository = getCustomRepository(UserRepository);
     return await userRepository.save(user);
   }
 
   @Put()
-  public async httpPut(@Req() request: Request, @Res() response: Response, @Body({ validate: true }) user: User)  {
-
+  public async httpPut(@Req() request: Request, @Res() response: FormatResponse, @Body({ validate: true }) user: User)  {
     const userRepository = getCustomRepository(UserRepository);
     return await userRepository.save(user);
   }
 
   @Get()
   @Authorized(UserRole.Admin)
-  public async httpGetAll(@Req() request: Request, @Res() response: Response)  {
-    return this.userService.getAll()
+  public async httpGetAll(@Req() request: Request, @Res() response: FormatResponse)  {
+    return await this.userService.getAll()
   }
 
   @Get("/:id")

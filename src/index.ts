@@ -38,6 +38,7 @@ createConnection().then(async connection => {
     controllers: [__dirname + "/controllers/**/*.ts"], // and configure it the way you need (controllers, validation, etc.)
     middlewares: [__dirname + "/middlewares/**/*.ts"],
     interceptors: [__dirname + "/interceptors/**/*.ts"],
+    defaultErrorHandler: false, // disable default error handler, only if you have your own error handler
     authorizationChecker: async ({request}: Action, roles: string[]) => {
 
       const token = request.cookies["access_token"];

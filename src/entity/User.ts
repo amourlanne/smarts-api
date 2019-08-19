@@ -7,7 +7,7 @@ import {
   Unique,
   BeforeInsert
 } from "typeorm";
-import {IsEmail, IsNotEmpty, Length} from "class-validator";
+import {IsEmail, IsEnum, IsNotEmpty, Length} from "class-validator";
 import * as bcrypt from "bcryptjs";
 
 export enum UserRole {
@@ -37,6 +37,7 @@ export class User {
 
   @Column()
   @IsNotEmpty()
+  @IsEnum(UserRole) // Not working
   role: UserRole;
 
   @Column()
