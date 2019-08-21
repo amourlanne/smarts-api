@@ -14,6 +14,7 @@ import config from './config/config';
 import { AuthenticationRequiredError } from './error/AuthenticationRequiredError';
 import { InvalidAuthenticationTokenError } from './error/InvalidAuthenticationTokenError';
 import { AccessDeniedError } from './error/AccessDeniedError';
+import corsConfig from './config/cors'
 
 const server = express();
 
@@ -21,7 +22,7 @@ useTypeormContainer(Container);
 
 createConnection().then(async connection => {
 
-  server.use(cors());
+  server.use(cors(corsConfig));
   server.use(helmet());
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));

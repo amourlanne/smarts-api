@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 const Email = require('email-templates');
 // @ts-ignore
 import hbs from "nodemailer-express-handlebars";
-import mailerConfig from '../config/mailerConfig';
+import mailerConfig from '../config/mailer';
 import { Service } from 'typedi';
 
 @Service()
