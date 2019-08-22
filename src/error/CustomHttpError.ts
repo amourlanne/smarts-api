@@ -9,10 +9,10 @@ export class CustomHttpError extends HttpError {
 
   toJSON() {
     return {
-      message: this.message,
       error: {
         code: this.httpCode,
         name: this.name,
+        message: this.message
       },
     };
   }
