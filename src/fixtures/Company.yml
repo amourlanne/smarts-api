@@ -1,0 +1,7 @@
+entity: Company
+parameters: {}
+items:
+  dotsafe:
+    name: 'Dotsafe'
+  company{1..5}:
+    name: 'Company ($current)'

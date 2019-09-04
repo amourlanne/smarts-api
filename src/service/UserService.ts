@@ -26,7 +26,7 @@ export class UserService {
   }
 
   public getById(id: string): Promise<User|undefined> {
-    return this.userRepository.findOne({id, activated: true});
+    return this.userRepository.findOne({ where: { id, activated: true }, relations: ['company'] });
   }
 
   public getOne(conditions?: FindConditions<User>): Promise<User|undefined> {

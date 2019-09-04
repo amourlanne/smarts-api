@@ -18,6 +18,9 @@ export class Project {
   @Length(4, 20)
   slug: string;
 
+  @Column()
+  name: string;
+
   @ManyToOne(type => Company, company => company.projects)
   company: Company;
 

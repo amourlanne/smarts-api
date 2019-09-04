@@ -14,7 +14,9 @@ import config from './config/config';
 import { AuthenticationRequiredError } from './error/AuthenticationRequiredError';
 import { InvalidAuthenticationTokenError } from './error/InvalidAuthenticationTokenError';
 import { AccessDeniedError } from './error/AccessDeniedError';
-import corsConfig from './config/cors'
+import corsConfig from './config/cors';
+import i18nConfig from './config/i18n'
+import i18n from "i18n";
 
 const server = express();
 
@@ -22,11 +24,15 @@ useTypeormContainer(Container);
 
 createConnection().then(async connection => {
 
+  i18n.configure(i18nConfig);
+
   server.use(cors(corsConfig));
   server.use(helmet());
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(cookieParser());
+
+  server.use(i18n.init);
 
   // its important to set container before any operation you do with routing-controllers,
   // including importing controllers
@@ -35,7 +41,6 @@ createConnection().then(async connection => {
   useExpressServer(server, {
     // register created express server in routing-controllers
     development: false,
-    routePrefix: "/api",
     controllers: [__dirname + "/controllers/**/*.ts"], // and configure it the way you need (controllers, validation, etc.)
     middlewares: [__dirname + "/middlewares/**/*.ts"],
     interceptors: [__dirname + "/interceptors/**/*.ts"],

@@ -49,8 +49,8 @@ export class UserController {
 
   @Get("/:id")
   @OnUndefined(UserNotFoundError)
-  public httpGetOne(@Param("id") id: string) {
-    return this.userService.getById(id);
+  public async httpGetOne(@Param("id") id: string) {
+    return await this.userService.getById(id);
   }
 
   // @Delete('/:id')

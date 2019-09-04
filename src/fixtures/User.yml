@@ -9,6 +9,7 @@ items:
     email: 'admin@smarts.com'
     password: 'admin'
     activated: true
+    company: '@dotsafe'
   user{1..10}:
     username: 'user($current)'
     firstName: '{{name.firstName}}'
@@ -17,3 +18,4 @@ items:
     email: 'user($current)@smarts.com'
     password: 'user($current)'
     activated: true
+    company: '@dotsafe'

@@ -5,10 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
-  BeforeInsert
-} from "typeorm";
+  BeforeInsert, ManyToOne,
+} from 'typeorm';
 import {IsEmail, IsEnum, IsNotEmpty, Length} from "class-validator";
 import * as bcrypt from "bcryptjs";
+import { Company } from './Company';
 
 export enum UserRole {
   Admin = 'ROLE_ADMIN',
@@ -50,6 +51,9 @@ export class User {
 
   @Column({default: false})
   activated: boolean;
+
+  @ManyToOne(type => Company, company => company.users)
+  company: Company;
 
   @Column()
   @CreateDateColumn()
