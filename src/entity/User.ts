@@ -15,7 +15,7 @@ export enum UserRole {
   User = 'ROLE_USER',
 }
 
-@Entity()
+@Entity("users")
 @Unique(["username"])
 @Unique(["email"])
 export class User {

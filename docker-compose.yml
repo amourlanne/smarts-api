@@ -3,18 +3,20 @@ version: '3.1'
 
 services:
   mariadb:
+    container_name: smarts_mariadb
     image: mariadb
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: typeorm-api
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: smarts
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
     ports:
       - 3306:3306
 
   phpmyadmin:
+    container_name: smarts_phpmyadmin
     image: phpmyadmin/phpmyadmin
     environment:
       - PMA_ARBITRARY=1
@@ -25,6 +27,7 @@ services:
       - /sessions
 
   maildev:
+    container_name: smarts_maildev
     image: djfarrelly/maildev
     ports:
       - '1080:80'

@@ -2,9 +2,9 @@
   "type": "mariadb",
   "host": "localhost",
   "port": 3306,
-  "username": "user",
-  "password": "password",
-  "database": "typeorm-api",
+  "username": "admin",
+  "password": "admin",
+  "database": "smarts",
   "synchronize": true,
   "logging": false,
   "entities": [

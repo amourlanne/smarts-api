@@ -6,7 +6,7 @@ items:
     firstName: '{{name.firstName}}'
     lastName: '{{name.lastName}}'
     role: 'ROLE_ADMIN'
-    email: 'admin@typeorm-api.com'
+    email: 'admin@smarts.com'
     password: 'admin'
     activated: true
   user{1..10}:
@@ -14,6 +14,6 @@ items:
     firstName: '{{name.firstName}}'
     lastName: '{{name.lastName}}'
     role: 'ROLE_USER'
-    email: 'user($current)@typeorm-api.com'
+    email: 'user($current)@smarts.com'
     password: 'user($current)'
     activated: true
