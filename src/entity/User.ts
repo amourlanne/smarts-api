@@ -5,11 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
-  BeforeInsert, ManyToOne,
+  BeforeInsert, ManyToOne, OneToMany,
 } from 'typeorm';
 import {IsEmail, IsEnum, IsNotEmpty, Length} from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { Company } from './Company';
+import {UserProject} from "./UserProject";
 
 export enum UserRole {
   Admin = 'ROLE_ADMIN',
@@ -62,6 +63,9 @@ export class User {
   @Column()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany((type) => UserProject, (userProject) => userProject.user)
+  public userProjects: UserProject[];
 
   @BeforeInsert()
   hashPassword() {
