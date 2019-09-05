@@ -1,0 +1,11 @@
+entity: UserProject
+parameters: {}
+items:
+  adminproject:
+    role: 'PROJECT_ROLE_GUEST'
+    user: '@admin'
+    project: '@project1'
+  userproject{1..10}:
+    role: 'PROJECT_ROLE_DEVELOPER'
+    user: '@user($current)'
+    project: '@project1'
