@@ -27,8 +27,14 @@ export class UserController {
   @Inject()
   private userService: UserService;
 
+  @Get("/me")
+  @Authorized()
+  public async httpGetMe(@CurrentUser({ required: true }) user: User)  {
+    return user;
+  }
+
   @Post()
-  @Authorized(UserRole.Admin)
+  @Authorized(UserRole.ADMIN)
   public async httpPost(@Req() request: Request, @Res() response: FormatResponse, @Body({ validate: true }) user: User)  {
 
     const userRepository = getCustomRepository(UserRepository);
@@ -42,15 +48,14 @@ export class UserController {
   }
 
   @Get()
-  @Authorized(UserRole.Admin)
   public async httpGetAll(@Req() request: Request, @Res() response: FormatResponse)  {
     return await this.userService.getAll()
   }
 
-  @Get("/:id")
+  @Get("/:username")
   @OnUndefined(UserNotFoundError)
-  public async httpGetOne(@Param("id") id: string) {
-    return await this.userService.getById(id);
+  public async httpGetByUsername(@Param("username") username: string) {
+    return await this.userService.getByUsername(username);
   }
 
   // @Delete('/:id')

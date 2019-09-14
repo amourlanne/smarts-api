@@ -9,7 +9,6 @@ const wrapperResult = (data?: any) => {
 export class CustomResponseHandler implements ExpressMiddlewareInterface {
 
   use(request: Request, response: Response, next: NextFunction): void {
-
     const oldJsonResponse = response.json;
     response.json = function (data?: any) : Response {
       arguments[0]= wrapperResult(data);

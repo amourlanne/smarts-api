@@ -29,6 +29,10 @@ export class UserService {
     return this.userRepository.findOne({ where: { id, activated: true }, relations: ['company'] });
   }
 
+  public getByUsername(username: string): Promise<User|undefined> {
+    return this.userRepository.findOne({ where: { username, activated: true }, relations: ['company'] });
+  }
+
   public getOne(conditions?: FindConditions<User>): Promise<User|undefined> {
     return this.userRepository.findOne(conditions);
   }
@@ -49,4 +53,24 @@ export class UserService {
   //   return this.userRepository.removeById(id);
   // }
 
+  public getAllByProject(slug: string): Promise<User[]> {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.userProjects', 'userProject')
+      .innerJoin('userProject.project', 'project')
+      .where('project.slug = :slug', { slug: slug })
+      .getMany();
+  }
+
+  public getAllByProjectAndUser(slug: string, user: User) {
+    return this.userRepository
+      .createQueryBuilder('user')
+      .innerJoin('user.userProjects', 'userProject')
+      .innerJoin('userProject.project', 'project')
+      .leftJoin('project.userProjects', 'userProject2')
+      .leftJoin('userProject2.user', 'user2')
+      .where('project.slug = :slug', { slug: slug })
+      .andWhere('user2.id = :id', { id: user.id })
+      .getMany();
+  }
 }

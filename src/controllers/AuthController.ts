@@ -46,7 +46,7 @@ export class AuthController {
   }
 
   @Post("/signup")
-  @Authorized(UserRole.Admin)
+  @Authorized(UserRole.ADMIN)
   async signUp(@Body({ validate: true }) user: User,
                @QueryParam('sendPassword') sendPassword: boolean) {
 

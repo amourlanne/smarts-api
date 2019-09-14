@@ -9,8 +9,8 @@ import {IsEnum, IsNotEmpty} from "class-validator";
 
 // TODO: export this class to customise it
 export enum UserProjectRole {
-  Guest = 'PROJECT_ROLE_GUEST',
-  Developer = 'PROJECT_ROLE_USER',
+  GUEST = 'PROJECT_ROLE_GUEST',
+  DEVELOPER = 'PROJECT_ROLE_DEVELOPER',
 }
 
 @Entity("user_projects")
@@ -22,7 +22,11 @@ export class UserProject {
   userId: string;
   projectId: string;
 
-  @Column()
+  @Column({
+    type: "enum",
+    enum: UserProjectRole,
+    default: UserProjectRole.DEVELOPER
+  })
   @IsEnum(UserProjectRole) // Not working
   role: UserProjectRole;
 

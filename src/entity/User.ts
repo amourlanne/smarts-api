@@ -13,8 +13,8 @@ import { Company } from './Company';
 import {UserProject} from "./UserProject";
 
 export enum UserRole {
-  Admin = 'ROLE_ADMIN',
-  User = 'ROLE_USER',
+  ADMIN = 'ROLE_ADMIN',
+  USER = 'ROLE_USER',
 }
 
 @Entity("users")
@@ -37,7 +37,11 @@ export class User {
   @Length(4, 100)
   password: string;
 
-  @Column()
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.USER
+  })
   @IsNotEmpty()
   @IsEnum(UserRole) // Not working
   role: UserRole;
@@ -73,6 +77,6 @@ export class User {
   }
 
   isAdmin() {
-    return this.role === UserRole.Admin
+    return this.role === UserRole.ADMIN
   }
 }
