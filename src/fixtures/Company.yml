@@ -3,5 +3,7 @@ parameters: {}
 items:
   dotsafe:
     name: 'Dotsafe'
+    slug: 'dotsafe'
   company{1..5}:
     name: 'Company ($current)'
+    slug: 'company-($current)'

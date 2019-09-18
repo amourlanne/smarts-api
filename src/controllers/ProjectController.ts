@@ -26,7 +26,6 @@ export class ProjectController {
   @Get()
   @Authorized()
   public async httpGetAll(@Req() request: Request, @Res() response: FormatResponse, @CurrentUser({ required: true }) user: User)  {
-    console.log(user)
     if (user.isAdmin()) {
       return this.projectService.getAll();
     } else {

@@ -9,6 +9,7 @@ import { User } from './User';
 
 
 @Entity("companies")
+@Unique(["slug"])
 export class Company {
 
   @PrimaryGeneratedColumn('uuid')
@@ -16,6 +17,10 @@ export class Company {
 
   @Column()
   name: string;
+
+  @Column()
+  @Length(4, 20)
+  slug: string;
 
   @OneToMany(type => Project, project => project.company)
   projects: Project[];
