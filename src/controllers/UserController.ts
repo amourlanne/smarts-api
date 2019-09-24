@@ -27,12 +27,6 @@ export class UserController {
   @Inject()
   private userService: UserService;
 
-  @Get("/me")
-  @Authorized()
-  public async httpGetMe(@CurrentUser({ required: true }) user: User)  {
-    return user;
-  }
-
   @Post()
   @Authorized(UserRole.ADMIN)
   public async httpPost(@Req() request: Request, @Res() response: FormatResponse, @Body({ validate: true }) user: User)  {

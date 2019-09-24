@@ -7,9 +7,9 @@ import {
   Res,
   BodyParam,
   Post,
-  NotFoundError, Authorized, Param, Body, QueryParam,
+  NotFoundError, Authorized, Param, Body, QueryParam, Get, CurrentUser,
 } from 'routing-controllers';
-import config from "../config/config";
+import config from "../config/security";
 import { Inject } from 'typedi';
 import { UserService } from '../service/UserService';
 import { MailerService } from '../service/MailerService';
@@ -146,5 +146,11 @@ export class AuthController {
     await this.userService.save(user);
 
     return "Password succefully changed."
+  }
+
+  @Get("/account")
+  @Authorized()
+  public async httpGetAccount(@CurrentUser({ required: true }) user: User)  {
+    return user;
   }
 }

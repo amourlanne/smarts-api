@@ -1,7 +1,7 @@
 import request from 'supertest';
 import server from '../src';
 
-describe('app', () => {
+describe('security.ts', () => {
   it('should redirect to /api for GET /', done => {
     return request(server)
       .get('/')

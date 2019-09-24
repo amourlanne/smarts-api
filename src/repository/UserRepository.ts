@@ -1,7 +1,7 @@
 import { EntityRepository, FindConditions, ObjectLiteral, Repository } from 'typeorm';
 import * as jwt from "jsonwebtoken";
 import {User} from "../entity/User";
-import config from "../config/config";
+import config from "../config/security";
 import { Service } from 'typedi';
 import * as bcrypt from 'bcryptjs';
 

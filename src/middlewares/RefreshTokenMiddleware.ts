@@ -1,7 +1,7 @@
 import { Middleware, ExpressMiddlewareInterface, CurrentUser } from 'routing-controllers';
 import {NextFunction, Request, Response} from "express";
 import * as jwt from 'jsonwebtoken';
-import config from '../config/config';
+import config from '../config/security';
 import { Inject } from 'typedi';
 import { UserService } from '../service/UserService';
 

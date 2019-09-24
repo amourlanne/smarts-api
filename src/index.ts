@@ -10,12 +10,15 @@ import { Action, useContainer as useRoutingControllersContainer, useExpressServe
 import {User} from "./entity/User";
 import {Container} from "typedi";
 import { UserRepository } from './repository/UserRepository';
-import config from './config/config';
+import config from './config/security';
+import session from "express-session";
+import passport from "passport";
 import { AuthenticationRequiredError } from './error/AuthenticationRequiredError';
 import { InvalidAuthenticationTokenError } from './error/InvalidAuthenticationTokenError';
 import { AccessDeniedError } from './error/AccessDeniedError';
 import corsConfig from './config/cors';
 import i18nConfig from './config/i18n'
+import sessionConfig from './config/session'
 import i18n from "i18n";
 
 const server = express();
@@ -28,6 +31,13 @@ createConnection().then(async connection => {
 
   server.use(cors(corsConfig));
   server.use(helmet());
+  // Use the session middleware
+  server.disable('x-powered-by');
+  server.use(session(sessionConfig));
+
+  server.use(passport.initialize());
+  server.use(passport.session());
+
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use(cookieParser());
