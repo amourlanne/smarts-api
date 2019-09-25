@@ -1,0 +1,11 @@
+entity: UserOrganization
+parameters: {}
+items:
+  userOrganizationAdmin:
+    user: '@admin'
+    organization: '@organizationDotsafe'
+    role: 'ORGANIZATION_ROLE_ADMIN'
+  userOrganization{1..10}:
+    user: '@user($current)'
+    organization: '@organizationDotsafe'
+    role: 'ORGANIZATION_ROLE_USER'

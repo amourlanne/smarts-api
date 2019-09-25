@@ -6,10 +6,12 @@ import {
 import {Length} from "class-validator";
 import {Company} from "./Company";
 import {UserProject} from "./UserProject";
+import { User } from './User';
+import { Organization } from './Organization';
 
 
 @Entity("projects")
-@Unique(["slug"])
+@Unique(["organization","slug"])
 export class Project {
 
   @PrimaryGeneratedColumn('uuid')
@@ -22,10 +24,16 @@ export class Project {
   @Column()
   name: string;
 
-  @ManyToOne(type => Company, company => company.projects)
+  @ManyToOne(() => Company, company => company.projects)
   company: Company;
 
-  @OneToMany((type) => UserProject, (userProject) => userProject.project)
-  public userProjects: UserProject[];
+  @ManyToOne(() => User, user => user.projects)
+  owner: User;
+
+  @ManyToOne(() => Organization, organization => organization.projects)
+  organization: Organization;
+
+  @OneToMany(() => UserProject, (userProject) => userProject.project)
+  userProjects: UserProject[];
 
 }

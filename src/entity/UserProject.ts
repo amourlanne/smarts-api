@@ -1,7 +1,7 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  ManyToOne, Column,
+  ManyToOne, Column, Index, Unique,
 } from 'typeorm';
 import {User, UserRole} from "./User";
 import {Project} from "./Project";
@@ -14,6 +14,7 @@ export enum UserProjectRole {
 }
 
 @Entity("user_projects")
+@Unique(["user", "project"])
 export class UserProject {
 
   @PrimaryGeneratedColumn('uuid')
@@ -27,7 +28,7 @@ export class UserProject {
     enum: UserProjectRole,
     default: UserProjectRole.DEVELOPER
   })
-  @IsEnum(UserProjectRole) // Not working
+  @IsEnum(UserProjectRole)
   role: UserProjectRole;
 
   @ManyToOne(type => User, user => user.userProjects)

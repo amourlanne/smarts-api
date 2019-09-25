@@ -1,0 +1,7 @@
+entity: Organization
+parameters: {}
+items:
+  organizationDotsafe:
+    name: 'Dotsafe'
+    slug: 'dotsafe'
+    owner: '@admin'

@@ -5,12 +5,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Unique,
-  BeforeInsert, ManyToOne, OneToMany,
+  BeforeInsert, ManyToOne, OneToMany, ManyToMany, JoinTable,
 } from 'typeorm';
 import {IsEmail, IsEnum, IsNotEmpty, Length} from "class-validator";
 import * as bcrypt from "bcryptjs";
 import { Company } from './Company';
 import {UserProject} from "./UserProject";
+import { UserOrganization } from './UserOrganization';
+import { Project } from './Project';
+import { Organization } from './Organization';
+import { Group } from 'nodemailer/lib/addressparser';
 
 export enum UserRole {
   ADMIN = 'ROLE_ADMIN',
@@ -57,7 +61,7 @@ export class User {
   @Column({default: false})
   activated: boolean;
 
-  @ManyToOne(type => Company, company => company.users)
+  @ManyToOne(() => Company, company => company.users)
   company: Company;
 
   @Column()
@@ -68,8 +72,17 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany((type) => UserProject, (userProject) => userProject.user)
-  public userProjects: UserProject[];
+  @OneToMany(() => UserProject, (userProject) => userProject.user)
+  userProjects: UserProject[];
+
+  @OneToMany(() => UserOrganization, (userOrganization) => userOrganization.user)
+  userOrganizations: UserOrganization[];
+
+  @OneToMany(() => Organization, organization => organization.owner)
+  organizations: Organization[];
+
+  @OneToMany(() => Project, project => project.owner)
+  projects: Project[];
 
   @BeforeInsert()
   hashPassword() {

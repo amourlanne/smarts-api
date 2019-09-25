@@ -1,5 +1,0 @@
-entity: ApplicationSettings
-parameters: {}
-items:
-  smarts:
-    company: '@dotsafe'

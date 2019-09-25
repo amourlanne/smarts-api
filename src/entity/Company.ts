@@ -1,11 +1,12 @@
 import {
   Column,
-  Entity, OneToMany,
+  Entity, ManyToOne, OneToMany,
   PrimaryGeneratedColumn, Unique,
-} from "typeorm";
+} from 'typeorm';
 import {Length} from "class-validator";
 import {Project} from "./Project";
 import { User } from './User';
+import { Organization } from './Organization';
 
 
 @Entity("companies")
@@ -27,5 +28,8 @@ export class Company {
 
   @OneToMany(type => User, user => user.company)
   users: User[];
+
+  @ManyToOne(type => Organization, organization => organization.companies)
+  organization: Organization;
 
 }

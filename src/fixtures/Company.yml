@@ -1,9 +1,11 @@
 entity: Company
 parameters: {}
 items:
-  dotsafe:
+  companyDotsafe:
     name: 'Dotsafe'
     slug: 'dotsafe'
+    organization: '@organizationDotsafe'
   company{1..5}:
     name: 'Company ($current)'
     slug: 'company-($current)'
+    organization: '@organizationDotsafe'
